@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using Steeltoe.CloudFoundry.Connector.MySql.EFCore;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace PalTracker
@@ -38,7 +38,8 @@ namespace PalTracker
                 Configuration.GetValue<string>("CF_INSTANCE_ADDR", "CfInstanceAddr not configured.")                
             ));
 
-            services.AddSingleton<ITimeEntryRepository, InMemoryTimeEntryRepository>();
+            services.AddScoped<ITimeEntryRepository, MySqlTimeEntryRepository>();
+            services.AddDbContext<TimeEntryContext>(options => options.UseMySql(Configuration));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
